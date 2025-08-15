@@ -1,81 +1,117 @@
-import tkinter as tk
-from tkinter import PhotoImage
+from tkinter import *
+from tkinter import messagebox
 import random
-import os
 
-# ------------------ util: rutas e imágenes ------------------
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-IMG_DIR = os.path.join(BASE_DIR, "img")
-MAX_PX = 120  # tamaño máximo deseado por lado
+ventana_juego = Tk()
 
-def cargar_imagen(nombre, max_px=MAX_PX):
-    """Carga una imagen desde img/ y la reduce por factor entero si es grande."""
-    ruta = os.path.join(IMG_DIR, nombre)
-    img = PhotoImage(file=ruta)
-    w, h = img.width(), img.height()
-    # reducir por factor entero para que encaje (PhotoImage solo acepta enteros)
-    factor = max(1, max(w // max_px, h // max_px))
-    if factor > 1:
-        img = img.subsample(factor, factor)
-    return img
+ventana_juego.title("PIEDRA, PAPEL O TIJERA")
 
-# ------------------ ventana ------------------
-root = tk.Tk()
-root.title("Piedra, Papel o Tijera")
-root.geometry("700x400")
-root.resizable(False, False)
+ventana_juego.geometry("800x700")
 
-# ------------------ UI ------------------
-frame_top = tk.Frame(root, width=700, height=180, bg="white")
-frame_top.pack_propagate(False)
-frame_top.pack()
+ventana_juego.resizable(0,0)
 
-lbl_resultado = tk.Label(frame_top, text="Elige una opción", font=("Arial", 20), bg="white")
-lbl_resultado.pack(pady=(20, 6))
+ventana_juego.config(bg="grey")
 
-lbl_jugador = tk.Label(frame_top, text="Jugador: —", font=("Arial", 14), bg="white")
-lbl_jugador.pack()
+respuestas = 0
 
-lbl_pc = tk.Label(frame_top, text="PC: —", font=("Arial", 14), bg="white")
-lbl_pc.pack()
+def piedra():
+    maq = random.randint(1,3)
+    if maq == 1:
+        t_resultado.insert(INSERT,"empataste, los dos jugadores sacaron piedra " + "\n")
+        respuestas =+ 1
+    
+    if maq == 2:
+        t_resultado.insert(INSERT,"ganaste, el jugador saco papel y la CPU piedra " + "\n")
+        respuestas =+1
+        
+    if maq == 3:
+        t_resultado.insert(INSERT,"perdiste, el jugador saco tijeras y la CPU piedra " + "\n")
+        respuestas =+1
 
-frame_btns = tk.Frame(root, width=700, height=200, bg="#dcdcdc")
-frame_btns.pack_propagate(False)
-frame_btns.pack()
+def papel():
+    maq = random.randint(1,3)
+    if maq == 1:
+        t_resultado.insert(INSERT,"ganaste, el jugador saco papel y la CPU piedra " + "\n")
+        respuestas =+1
 
-# ------------------ lógica ------------------
-def jugar(eleccion_jugador):
-    opciones = ["Piedra", "Papel", "Tijera"]
-    eleccion_pc = random.choice(opciones)
+    if maq == 2:
+        t_resultado.insert(INSERT,"empatasre, los dos sacaron papel " + "\n")
+        respuestas =+1
 
-    lbl_jugador.config(text=f"Jugador: {eleccion_jugador}")
-    lbl_pc.config(text=f"PC: {eleccion_pc}")
+    if maq == 3:
+        t_resultado.insert(INSERT,"perdiste, el jugador saco papel y la CPU tijeras " + "\n")
+        respuestas =+1
 
-    if eleccion_jugador == eleccion_pc:
-        lbl_resultado.config(text="Empate 😐")
-    elif (eleccion_jugador == "Piedra" and eleccion_pc == "Tijera") or \
-         (eleccion_jugador == "Papel" and eleccion_pc == "Piedra") or \
-         (eleccion_jugador == "Tijera" and eleccion_pc == "Papel"):
-        lbl_resultado.config(text="¡Ganaste! 🎉")
-    else:
-        lbl_resultado.config(text="Perdiste ☹️")
 
-# ------------------ imágenes + botones ------------------
-img_piedra  = cargar_imagen("piedra.png")
-img_papel   = cargar_imagen("papel.png")
-img_tijeras = cargar_imagen("tijeras.png")
+def tijeras():
+    maq = random.randint(1,3)
+    if maq == 1:
+        t_resultado.insert(INSERT,"perdiste, el jugador saco tijeras y la CPU piedra " + "\n")
+        respuestas =+1
 
-# OJO: no pongas width/height en los botones con image (cortan la imagen)
-bt_piedra  = tk.Button(frame_btns, image=img_piedra,  command=lambda: jugar("Piedra"),  cursor="hand2", bd=2)
-bt_papel   = tk.Button(frame_btns, image=img_papel,   command=lambda: jugar("Papel"),   cursor="hand2", bd=2)
-bt_tijeras = tk.Button(frame_btns, image=img_tijeras, command=lambda: jugar("Tijera"), cursor="hand2", bd=2)
+    if maq == 2:
+        t_resultado.insert(INSERT,"ganaste, el jugaodor saco tijeras y la CPU papel " + "\n")
+        respuestas =+1
 
-# una distribución simple en grid
-frame_btns.columnconfigure((0,1,2), weight=1)
-bt_piedra.grid(row=0, column=0, pady=40)
-bt_papel.grid(row=0, column=1, pady=40)
-bt_tijeras.grid(row=0, column=2, pady=40)
+    if maq == 3:
+        t_resultado.insert(INSERT,"emptaste, los dos sacaron tjeras " + "\n")
+        respuestas =+1
 
-root.mainloop()
+
+#-------------------------------
+#Frame1 - entrada de datos
+#-------------------------------
+frame_1 = Frame(ventana_juego)
+frame_1.config(bg="ivory2",width=780, height=200)
+frame_1.place(x=10,y=10)
+
+
+# Imagen - logo de la app
+logo = PhotoImage(file="img/LOGO1.png")
+label_logo = Label(frame_1, image=logo)
+label_logo.place(x=10, y=10)
+
+#-------------------------------
+#             Titulo
+#-------------------------------
+
+titulo = Label(frame_1, text="PIEDRA PAPEL O TIJERA...")
+titulo.config(bg="yellow", fg="blue", font=("Arial", 18))
+titulo.place(x=405, y=10)
+
+titulo = Label(frame_1, text="      Samyr Alejandro Archila Guiza      ")
+titulo.config(bg="yellow", fg="blue", font=("Arial", 18))
+titulo.place(x=370, y=50)
+
+frame_2 = Frame(ventana_juego)
+frame_2.config(bg="ivory2",width=780, height=250)
+frame_2.place(x=10,y=230)
+
+img_bt_tijeras = PhotoImage(file = "img/TIJERA.png")
+bt_tijeras = Button(frame_2, image=img_bt_tijeras, width = 200, height = 220, command= tijeras)
+bt_tijeras.place(x=40, y=7)
+
+img_bt_piedra = PhotoImage(file="img/PIEDRA.png")
+bt_piedra = Button(frame_2,image=img_bt_piedra, width= 200, height= 220, command= piedra)
+bt_piedra.place(x= 300, y=7)
+
+
+img_bt_papel = PhotoImage(file="img/PAPEL.png")
+bt_papel = Button(frame_2,image=img_bt_papel, width=200, height=220, command= papel)
+bt_papel.place(x=550,y=7)
+
+
+frame_3 = Frame(ventana_juego)
+frame_3.config(bg="ivory2",width=780, height=180)
+frame_3.place(x=10,y=500)
+
+# Comando de texto
+t_resultado = Text(frame_3, width = 49, height=6)
+t_resultado.config(bg="green", fg = "white", font = ("courier",20))
+t_resultado.pack()
+
+ventana_juego.mainloop()
+    
+
 
 
